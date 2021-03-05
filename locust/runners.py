@@ -36,7 +36,7 @@ STATE_INIT, STATE_SPAWNING, STATE_RUNNING, STATE_CLEANUP, STATE_STOPPING, STATE_
 ]
 WORKER_REPORT_INTERVAL = 3.0
 CPU_MONITOR_INTERVAL = 5.0
-HEARTBEAT_INTERVAL = 0.5
+HEARTBEAT_INTERVAL = 1
 HEARTBEAT_LIVENESS = 30
 FALLBACK_INTERVAL = 5
 
@@ -604,6 +604,7 @@ class MasterRunner(DistributedRunner):
                 continue
 
             for client in self.clients.all:
+                logger.debug(f"client heartbeat {client.heartbeat} id {cleint.id} state {client.state}")
                 if client.heartbeat < 0 and client.state != STATE_MISSING:
                     logger.info("Worker %s failed to send heartbeat, setting state to missing." % str(client.id))
                     client.state = STATE_MISSING
